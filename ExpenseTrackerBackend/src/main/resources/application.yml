@@ -1,0 +1,38 @@
+
+server:
+  port: 2024  # Set the server port
+
+spring:
+  application:
+    name: ExpenseTrackerBackend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/expensetracker
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update  # Use `update` for development; for production, prefer `validate` or `none`
+    show-sql: true      # Enable this to log SQL queries in the console
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+graphql:
+  playground:
+    enabled: true  # Enables GraphQL Playground
+    mapping: /playground
+  graphiql:
+    enabled: true  # Enables GraphiQL
+    mapping: /graphiql  # Path for GraphiQL UI
+    endpoint: /graphql  # GraphQL endpoint that GraphiQL will query	
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - health
+
+

@@ -1,0 +1,132 @@
+# Enums
+enum Gendar {
+    MALE
+    FEMALE
+}
+
+enum Category {
+    FOOD
+    TRANSPORT
+    SHOPPING
+    UTILITIES
+    ENTERTAINMENT
+    HEALTHCARE
+    GROCERIES
+    EDUCATION
+    OTHER
+}
+
+enum PaymentMethod {
+	CASH
+	CREDIT_CARD
+	DEBIT_CARD
+	BANK_TRANSFER
+	DIGITAL_WALLET
+}
+
+enum Roles {
+    USER
+    ADMIN
+    SUPERADMIN
+}
+
+# Types
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    phoneNumber: String!
+    gendar: Gendar
+    roles: [Role!]!
+    expenses: [Expense!]!
+    createdAt: String
+    updatedAt: String
+}
+
+type Expense {
+    id: ID!
+    description: String!
+    amount: Float!
+    date: String!
+    location: String
+    category: Category
+    paymentMethod: PaymentMethod
+    user: User!
+    createdAt: String
+    updatedAt: String
+}
+
+type Role {
+    id: ID!
+    roleName: Roles!
+}
+
+
+
+# Input Types
+
+input RoleInput {
+  roleName: Roles
+}
+
+input UserInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    phoneNumber: String
+    gendar: Gendar
+    roles: [RoleInput!]
+    expenses:[ExpenseInput]
+}
+
+input UserUpdateInput {
+    id: ID!
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    gendar: Gendar
+    roles: [RoleInput!]
+    expenses:[ExpenseInput]
+}
+
+input ExpenseInput {
+    description: String!
+    amount: Float!
+    date: String!
+    location: String
+    category: Category
+    paymentMethod: PaymentMethod
+    userId: ID!
+}
+
+input ExpenseUpdateInput {
+    id: ID!
+    description: String
+    amount: Float
+    date: String
+    location: String
+    category: Category
+    paymentMethod: PaymentMethod
+}
+
+# Queries
+type Query {
+    fetchUser(id: ID!): User
+    fetchUsers: [User!]!
+    fetchExpense(id: ID!): Expense
+    fetchExpenses: [Expense!]!
+}
+
+# Mutations
+type Mutation {
+    saveUser(user: UserInput!): User!
+    updateUser(user: UserUpdateInput!): User!
+    deleteUser(id: ID!): String!
+
+    saveExpense(expense: ExpenseInput!): Expense!
+    updateExpense(expense: ExpenseUpdateInput!): Expense!
+    deleteExpense(id: ID!): String!
+}

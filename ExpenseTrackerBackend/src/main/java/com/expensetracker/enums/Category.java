@@ -1,0 +1,5 @@
+package com.expensetracker.enums;
+
+public enum Category {
+	FOOD, FUEL, CREDITCARDBILL, SHOPPING, UTILITIES, ENTERTAINMENT, HEALTHCARE, GROCERIES, EDUCATION, OTHER
+}
