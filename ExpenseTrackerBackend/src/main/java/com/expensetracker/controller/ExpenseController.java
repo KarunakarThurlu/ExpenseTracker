@@ -37,12 +37,12 @@ public class ExpenseController {
 		return expenseService.deleteExpense(id);
 	}
 	
-	@QueryMapping
+	@QueryMapping(name="expense")
 	public ExpenseDTO fetchExpense(@Argument("id") Long id) {
 		return expenseService.fetchExpense(id);
 	}
 	
-	@QueryMapping
+	@QueryMapping(name="expenses")
 	public List<ExpenseDTO> fetchExpenses(){
 		return expenseService.fetchExpenses();
 	}

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.expensetracker.dto.PaginatedResponse;
 import com.expensetracker.dto.UserDTO;
 import com.expensetracker.entity.Role;
 import com.expensetracker.entity.User;
@@ -106,9 +107,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDTO> getAllUsers() {
+	public PaginatedResponse<List<UserDTO>> getAllUsers() {
 		List<User> users = userRepository.findAll();
-		return users.stream().map(u->UserMapper.toUserDTO.apply(u)).toList();
+		return new PaginatedResponse<>(users.stream().map(u->UserMapper.toUserDTO.apply(u)).toList(), 10);
 	}
 
 	@Override

@@ -114,10 +114,26 @@ input ExpenseUpdateInput {
 
 # Queries
 type Query {
-    fetchUser(id: ID!): User
-    fetchUsers: [User!]!
-    fetchExpense(id: ID!): Expense
-    fetchExpenses: [Expense!]!
+    user(id: ID!): User
+    users(pageSize:Int!
+               pageNumber:Int!
+               fromDate:String!
+               toDate:String!): PaginatedUsers!
+    expense(id: ID!): Expense
+    expenses(pageSize:Int!
+               pageNumber:Int!
+               fromDate:String!
+               toDate:String!): PaginatedExpenses!
+}
+
+type PaginatedUsers {
+  data: [User!]!
+  total: Int!
+}
+
+type PaginatedExpenses {
+  data: [Expense!]!
+  total: Int!
 }
 
 # Mutations

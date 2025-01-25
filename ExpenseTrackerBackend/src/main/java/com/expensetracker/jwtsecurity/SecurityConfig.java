@@ -21,17 +21,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/graphql").authenticated() // Apply authentication to GraphQL queries/mutations
-            .requestMatchers("/login").permitAll()
-            .anyRequest().permitAll()                    // Allow other requests (e.g., static resources)
-        )
-        .csrf(AbstractHttpConfigurer::disable)
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-    }
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/signin").permitAll()
+				.requestMatchers("/signup").permitAll()
+				.requestMatchers("/graphiql").permitAll()
+				.requestMatchers("/graphql").permitAll()
+				.anyRequest().denyAll())
+				.csrf(AbstractHttpConfigurer::disable)
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

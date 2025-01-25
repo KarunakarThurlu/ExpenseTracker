@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.expensetracker.dto.ExpenseDTO;
@@ -20,6 +21,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 	
 	@Autowired
 	private ExpenseRepository expenseRepository;
+	
+	@Autowired
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
 	public ExpenseDTO saveExpense(ExpenseDTO expenseDTO) {
@@ -45,6 +49,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public List<ExpenseDTO> fetchExpenses() {
+		
 		return expenseRepository.findAll()
 				.stream()
 				.map(e -> ExpenseMapper.toExpenseDTO.apply(e))
