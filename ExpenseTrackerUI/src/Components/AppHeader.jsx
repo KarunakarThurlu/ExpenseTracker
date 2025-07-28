@@ -9,17 +9,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Drawer, Menu, MenuItem } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
 import SideMenu from './SideMenu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AppHeader() {
+
+    const navigate = useNavigate();
 
     const [state, setState] = useState({ drawerOpen: false });
     const [auth, setAuth] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const handleChange = (event) => {
-        setAuth(event.target.checked);
-    };
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -31,11 +31,22 @@ export default function AppHeader() {
     const toggleDrawer = (open) => (event) => {
         setState(prevState => ({ ...prevState, drawerOpen: open }))
     };
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+       //setAuth(false);
+       navigate('/signin');
+    };
+
+    // useEffect(() => {
+    //     if (auth) {
+    //         navigate('/signin');
+    //     }
+    // }, [auth]);
 
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static" sx={{ backgroundColor: '#fbc600', color: 'black' }}>
+                <AppBar position="sticky" sx={{ backgroundColor: '#fbc600', color: 'black' }}>
                     <Toolbar>
                         <IconButton
                             size="large"
@@ -76,8 +87,9 @@ export default function AppHeader() {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     </Toolbar>

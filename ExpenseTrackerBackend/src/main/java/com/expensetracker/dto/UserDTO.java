@@ -6,12 +6,10 @@ import java.util.Set;
 
 import com.expensetracker.entity.Role;
 import com.expensetracker.enums.Gendar;
-import com.expensetracker.enums.Roles;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public class UserDTO {
 	
@@ -39,16 +37,22 @@ public class UserDTO {
     private Gendar gendar;
     private Set<Role> roles;
     private List<ExpenseDTO> expenses;
-    
-    
+    private Long tenantId;
+    private Long createdBy;
+
+	public UserDTO(Long tenantId, Long createdBy) {
+		super();
+		this.tenantId = tenantId;
+		this.createdBy = createdBy;
+	}
 	public UserDTO() {
 		super();
 	}
-
+	
 	public UserDTO(Long id, @NotBlank(message = "First name is mandatory") String firstName,
 			@NotBlank(message = "Last name is mandatory") String lastName,
 			@NotBlank(message = "Email is mandatory") @Email(message = "Email should be valid") String email,
-			@NotBlank(message = "Password is mandatory") @Size(min = 8, message = "Password must be at least 8 characters long") String password,
+			String password,
 			@Pattern(regexp = "^\\+?[0-9. ()-]{10}$", message = "Phone number should be valid and between 10 to 15 digits") String phoneNumber,
 			LocalDateTime createdAt, LocalDateTime updatedAt, Gendar gendar, Set<Role> roles,
 			List<ExpenseDTO> expenses) {
@@ -66,13 +70,17 @@ public class UserDTO {
 		this.expenses = expenses;
 	}
 
+	
+
 	public Long getId() {
 		return id;
 	}
 
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 
 	public String getFirstName() {
 		return firstName;
@@ -124,6 +132,26 @@ public class UserDTO {
 	}
 
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+
 	public Gendar getGendar() {
 		return gendar;
 	}
@@ -153,20 +181,29 @@ public class UserDTO {
 		this.expenses = expenses;
 	}
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public Long getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(Long tenantId) {
+		this.tenantId = tenantId;
+	}
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+	@Override
+	public String toString() {
+		return "UserDTO [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", phoneNumber=" + phoneNumber + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", gendar=" + gendar + ", roles=" + roles + ", expenses=" + expenses
+				+ ", tenantId=" + tenantId + ", createdBy=" + createdBy + "]";
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+	
+    
   
+    
 }

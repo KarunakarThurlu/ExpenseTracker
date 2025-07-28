@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +17,11 @@ import com.expensetracker.service.UserService;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-	@Autowired
 	private UserService userService;
+	
+	public CustomUserDetailsService(UserService userService) {
+		this.userService=userService;
+	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if(user==null) {
 			throw new UsernameNotFoundException("Invalid username or Password");
 		}
-		return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),getAuthority(user));
+		return new UserDetailsImpl(user.getId(), user.getEmail(), user.getPassword(), getAuthority(user), user);
 	}
 
 	private Collection<? extends GrantedAuthority> getAuthority(User user) {

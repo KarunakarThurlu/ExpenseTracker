@@ -1,44 +1,49 @@
 import { gql } from '@apollo/client';
 
 const CREATE_USER = gql`
-    mutation CreateUser($input: CreateUserInput!) {
-        createUser(input: $input) {
-        id
-        firstName
-        lastName
-        email
-        phoneNumber
-        roles {
-            roleName
-        }
+    mutation SaveUser($input: UserInput!) {
+        saveUser(user: $input) {
+            firstName
+            lastName
+            email
+            phoneNumber
+            gendar
+            tenantId
+            createdBy
+            roles {
+                roleName
+            }
         }
     }
     `;
 const UPDATE_USER = gql`
-    mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
-        updateUser(id: $id, input: $input) {
-        id
-        firstName
-        lastName
-        email
-        phoneNumber
-        roles {
-            roleName
-        }
+    mutation UpdateUser($input: UserUpdateInput!) {
+        updateUser(user: $input) {
+            id
+            firstName
+            lastName
+            email
+            phoneNumber
+            gendar
+            tenantId
+            createdBy
+            roles {
+                roleName
+            }
         }
     }
     `;
 const DELETE_USER = gql`
     mutation DeleteUser($id: ID!) {
         deleteUser(id: $id) {
-        id
-        firstName
-        lastName
-        email
-        phoneNumber
-        roles {
-            roleName
-        }
+            id
+            firstName
+            lastName
+            email
+            phoneNumber
+            roles {
+                roleName
+            }
         }
     }
     `;

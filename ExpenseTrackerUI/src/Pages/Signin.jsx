@@ -1,16 +1,19 @@
 
-//Login page with material-ui
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import LockPersonRoundedIcon from '@mui/icons-material/LockPersonRounded';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { Button, Stack, TextField } from '@mui/material';
+import axios from 'axios';
+import {useNotifier} from '../Utils/Notifyer'
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Signin = () => {
     const theme = useTheme();
-
+    const { showNotification } =   useNotifier();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -34,8 +37,32 @@ const Signin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+         
+        //Signin API Call and forward /dashboard if success
         if (validateForm()) {
-            console.log('Form Submitted');
+            axios.post(`${apiUrl}/signin`, formData)
+                .then(response => {
+                    if (response.status === 202 && response.data.AuthToken) {
+                        const token = response.data.AuthToken;
+                         const payload = JSON.parse(atob(token.split('.')[1]));
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('userId', payload.userId);
+                        const roles = payload.roles.map(role=>role.authority).join(',');
+                        localStorage.setItem('roles', roles);
+                        setFormData({
+                            email: '',
+                            password: ''
+                        });
+                        navigate('/dashboard');
+                    } else {
+                        setError({ ...error, general: response.data.message });
+                    }
+                    showNotification('Login is success','success')
+                }).catch(error => {
+                      const message =  error?.response.data.message || "Internal Server Error"
+                    showNotification(message,'error')
+                    setError({ ...error, general: 'An error occurred. Please try again.' });
+                });
         }
     }
 

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.expensetracker.enums.Category;
 import com.expensetracker.enums.PaymentMethod;
+import com.expensetracker.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
@@ -12,8 +13,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "Expenses")
 public class Expense extends BaseEntity {
 	
 	private String description;
@@ -27,17 +30,20 @@ public class Expense extends BaseEntity {
     
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
+
 	public Expense() {
 		super();
 	}
 
 	public Expense(String description, BigDecimal amount, LocalDateTime date, String location, Category category,
-			PaymentMethod paymentMethod, User user) {
+			PaymentMethod paymentMethod, TransactionType transactionType, User user) {
 		super();
 		this.description = description;
 		this.amount = amount;
@@ -45,6 +51,7 @@ public class Expense extends BaseEntity {
 		this.location = location;
 		this.category = category;
 		this.paymentMethod = paymentMethod;
+		this.transactionType = transactionType;
 		this.user = user;
 	}
 
@@ -96,6 +103,14 @@ public class Expense extends BaseEntity {
 		this.paymentMethod = paymentMethod;
 	}
 
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -106,9 +121,12 @@ public class Expense extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Expense [description=" + description + ", amount=" + amount + ", date=" + date + ", location="
-				+ location + ", category=" + category + ", paymentMethod=" + paymentMethod + ", user=" + user + "]";
+		return " { description=" + description + ", amount=" + amount + ", date=" + date + ", location="
+				+ location + ", category=" + category + ", paymentMethod=" + paymentMethod + ", transactionType="
+				+ transactionType + ", user=" + user + " } ";
 	}
     
     
+    
+	
 }

@@ -17,17 +17,56 @@ enum Category {
 }
 
 enum PaymentMethod {
-	CASH
-	CREDIT_CARD
-	DEBIT_CARD
-	BANK_TRANSFER
-	DIGITAL_WALLET
+ CASH
+ CREDIT_CARD
+ DEBIT_CARD
+ BANK_TRANSFER
+ DIGITAL_WALLET
+ UPI
+ CHEQUE
+ SALARY
+ OTHER
 }
 
 enum Roles {
     USER
     ADMIN
-    SUPERADMIN
+    SUPER_ADMIN
+}
+
+enum TransactionType {
+	CREDIT
+	DEBIT
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+enum UserSortField {
+  id
+  firstName
+  lastName
+  email
+  createdAt
+}
+
+enum ExpenseSortField {
+  id
+  amount
+  category
+  paymentMethod
+  transactionType
+  createdAt
+}
+
+enum TenantSortField {
+  id
+  name
+  maxUsersAllowed
+  licenseExpiry
+  createdAt
 }
 
 # Types
@@ -40,6 +79,8 @@ type User {
     gendar: Gendar
     roles: [Role!]!
     expenses: [Expense!]!
+    tenantId: ID
+    createdBy: ID
     createdAt: String
     updatedAt: String
 }
@@ -55,6 +96,7 @@ type Expense {
     user: User!
     createdAt: String
     updatedAt: String
+    transactionType: String
 }
 
 type Role {
@@ -62,10 +104,19 @@ type Role {
     roleName: Roles!
 }
 
+type Tenant {
+	id: ID!
+    name: String!
+    maxUsersAllowed: Int!
+    licenseExpiry: String! 
+    users: [User]
+    createdAt: String
+    updatedAt: String
+}
+
 
 
 # Input Types
-
 input RoleInput {
   roleName: Roles
 }
@@ -78,7 +129,8 @@ input UserInput {
     phoneNumber: String
     gendar: Gendar
     roles: [RoleInput!]
-    expenses:[ExpenseInput]
+    tenantId: ID
+    createdBy: ID
 }
 
 input UserUpdateInput {
@@ -89,16 +141,19 @@ input UserUpdateInput {
     phoneNumber: String
     gendar: Gendar
     roles: [RoleInput!]
-    expenses:[ExpenseInput]
+    tenantId: ID
+    createdBy: ID
 }
 
 input ExpenseInput {
+	id: ID
     description: String!
     amount: Float!
-    date: String!
+    date: String
     location: String
-    category: Category
-    paymentMethod: PaymentMethod
+    category: Category!
+    paymentMethod: PaymentMethod!
+    transactionType: TransactionType!
     userId: ID!
 }
 
@@ -110,21 +165,38 @@ input ExpenseUpdateInput {
     location: String
     category: Category
     paymentMethod: PaymentMethod
+    transactionType: TransactionType
+    userId: ID!
 }
 
-# Queries
-type Query {
-    user(id: ID!): User
-    users(pageSize:Int!
-               pageNumber:Int!
-               fromDate:String!
-               toDate:String!): PaginatedUsers!
-    expense(id: ID!): Expense
-    expenses(pageSize:Int!
-               pageNumber:Int!
-               fromDate:String!
-               toDate:String!): PaginatedExpenses!
+input TenantInput {
+    id: ID
+    name: String!
+    maxUsersAllowed: Int!
+    licenseExpiry: String!
+    
 }
+
+input TenantUpdateInput {
+    id: ID!
+    name: String
+    maxUsersAllowed: Int
+    licenseExpiry: String
+    
+}
+
+input UpdatePasswordInput {
+	email:String!
+	password:String!
+}
+
+input PaginationInput {
+	pageSize: Int!
+    pageNumber: Int!
+    sortBy: String = "createdAt"
+    sortDirection: String = "DESC"
+}
+
 
 type PaginatedUsers {
   data: [User!]!
@@ -136,13 +208,69 @@ type PaginatedExpenses {
   total: Int!
 }
 
+type PaginatedTenants {
+  data: [Tenant!]!
+  total: Int!
+}
+
+type DashboardData {
+  transactionTypeByAmount: [KeyValuePair!]!
+  groupingByCategory: [KeyValuePair!]!
+  groupingByPaymentMethod: [KeyValuePair!]!
+  lastFiveTransactions:[Expense]
+}
+
+type KeyValuePair {
+  key: String!
+  value: String!
+}
+
+
+# Queries
+type Query {
+  user(id: ID!): User
+  expense(id: ID!): Expense
+  fetchTenant(id: ID!): Tenant!
+  
+  users(
+  	pageSize: Int!
+    pageNumber: Int!
+    sortBy: UserSortField = createdAt
+    sortDirection: SortDirection = DESC
+   ): PaginatedUsers!
+       
+  expenses(
+  	pageSize: Int!
+    pageNumber: Int!
+    sortBy: UserSortField = createdAt
+    sortDirection: SortDirection = DESC
+  ): PaginatedExpenses!
+  
+  tenants(
+    pageSize: Int!
+    pageNumber: Int!
+    sortBy: TenantSortField = id
+    sortDirection: SortDirection = DESC
+  ): PaginatedTenants!
+  
+  dashboardData(fromDate:String!
+                toDate:String!):DashboardData!
+}
+
+
 # Mutations
 type Mutation {
     saveUser(user: UserInput!): User!
     updateUser(user: UserUpdateInput!): User!
     deleteUser(id: ID!): String!
+    updatePassword(updatePassword:UpdatePasswordInput!):String!
 
     saveExpense(expense: ExpenseInput!): Expense!
     updateExpense(expense: ExpenseUpdateInput!): Expense!
     deleteExpense(id: ID!): String!
+    
+    saveTenant(tenant: TenantInput!): Tenant!
+    updateTenant(tenant: TenantUpdateInput!): Tenant!
+    deleteTenant(id: ID!): String!
+    
 }

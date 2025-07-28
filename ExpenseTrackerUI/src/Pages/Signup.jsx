@@ -6,28 +6,25 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Signup = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
         email: '',
-        phoneNumber: '',
         password: '',
         confirmPassword: ''
     });
     const [error, setError] = useState({
-        firstName: '',
-        lastName: '',
         email: '',
-        phoneNumber: '',
         password: '',
         confirmPassword: ''
     });
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,8 +40,25 @@ const Signup = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         if (validateForm()) {
-            console.log('Form Submitted');
+            axios.post(`${apiUrl}/signup`, formData)
+                .then(response => {
+                    if (response.status === 201 && response.data.AuthToken) {
+                        localStorage.setItem('token', response.data.AuthToken);
+                        setFormData({
+                            email: '',
+                            password: '',
+                            confirmPassword: ''
+                        });
+                        navigate('/signin');
+                    } else {
+                        setError({ ...error, general: response.data.message });
+                    }
+                })
+                .catch(() => {
+                    setError({ ...error, general: 'An error occurred. Please try again.' });
+                });
         }
     };
 
@@ -63,22 +77,6 @@ const Signup = () => {
     }
 
     const checkConstraints = (name, value) => {
-        if (name === 'firstName') {
-            if (value === '') {
-                return 'This field is required';
-            }
-            if (!/^[a-zA-Z]*$/.test(value)) {
-                return 'Only alphabets are allowed';
-            }
-        }
-        if (name === 'lastName') {
-            if (value === '') {
-                return 'This field is required';
-            }
-            if (!/^[a-zA-Z]*$/.test(value)) {
-                return 'Only alphabets are allowed';
-            }
-        }
         if (name === 'email') {
             if (value === '') {
                 return 'This field is required';
@@ -87,20 +85,12 @@ const Signup = () => {
                 return 'Email is not valid';
             }
         }
-        if (name === 'phoneNumber') {
-            if (value === '') {
-                return 'This field is required';
-            }
-            if (!/^[0-9]{10}$/.test(value)) {
-                return 'Phone number is not valid';
-            }
-        }
         if (name === 'password') {
             if (value === '') {
                 return 'This field is required';
             }
             if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/.test(value)) {
-                return 'Password should contain atleast one uppercase, one lowercase, one number and one special character';
+                return 'Password should contain at least one uppercase, one lowercase, one number and one special character';
             }
         }
         if (name === 'confirmPassword') {
@@ -115,8 +105,6 @@ const Signup = () => {
     }
 
     return (
-        //Text field havs once `MuiTextField-root` class has margingTop:16px i need to remove that
-
         <Box
             component="form"
             noValidate
@@ -130,31 +118,11 @@ const Signup = () => {
                 borderRadius: '10px',
                 backgroundColor: '#fff',
                 marginTop: '50px',
-                textAlign:'center'
+                textAlign: 'center'
             }}
         >
             <AccountCircleRoundedIcon />
             <Stack spacing={1.4}>
-                <TextField
-                    name="firstName"
-                    label="First Name"
-                    variant="outlined"
-                    margin="normal"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    error={error.firstName !== '' ? true : false}
-                    helperText={error.firstName}
-                />
-                <TextField
-                    name="lastName"
-                    label="Last Name"
-                    variant="outlined"
-                    margin="normal"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    error={error.lastName !== '' ? true : false}
-                    helperText={error.lastName}
-                />
                 <TextField
                     name="email"
                     label="Email"
@@ -162,18 +130,8 @@ const Signup = () => {
                     margin="normal"
                     value={formData.email}
                     onChange={handleChange}
-                    error={error.email !== '' ? true : false}
+                    error={error.email !== ''}
                     helperText={error.email}
-                />
-                <TextField
-                    name="phoneNumber"
-                    label="Phone Number"
-                    variant="outlined"
-                    margin="normal"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    error={error.phoneNumber !== '' ? true : false}
-                    helperText={error.phoneNumber}
                 />
                 <TextField
                     name="password"
@@ -183,7 +141,7 @@ const Signup = () => {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    error={error.password !== '' ? true : false}
+                    error={error.password !== ''}
                     helperText={error.password}
                 />
                 <TextField
@@ -194,7 +152,7 @@ const Signup = () => {
                     type="password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    error={error.confirmPassword !== '' ? true : false}
+                    error={error.confirmPassword !== ''}
                     helperText={error.confirmPassword}
                 />
                 <Button
@@ -206,17 +164,15 @@ const Signup = () => {
                 >
                     Signup
                 </Button>
-                
                 <div>
-                    <Link to="/signup" style={{ textDecoration: 'none', marginRight: '10px',color: "#3b3d49" }}>
+                    <Link to="/signup" style={{ textDecoration: 'none', marginRight: '10px', color: "#3b3d49" }}>
                         Create an account
                     </Link>
-
-                    <Link to="/signin" style={{ textDecoration: 'none',color: "#3b3d49" }}>
+                    <Link to="/signin" style={{ textDecoration: 'none', color: "#3b3d49" }}>
                         Signin
                     </Link>
                 </div>
-            </Stack >
+            </Stack>
         </Box>
     )
 }

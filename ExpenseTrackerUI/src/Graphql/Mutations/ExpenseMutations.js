@@ -1,22 +1,23 @@
-import {gql} from '@appolo/client';
+import {gql} from '@apollo/client'
 
 const CREATE_EXPENSE = gql`
-    mutation CreateExpense($input: CreateExpenseInput!) {
-        createExpense(input: $input) {
+    mutation SaveExpense($input: ExpenseInput!) {
+        saveExpense(expense: $input) {
             id
-            description
             amount
-            date
-            location
             category
+            date
+            description
+            location
             paymentMethod
+            transactionType
         }
     }
 `;
 
 const UPDATE_EXPENSE = gql`
-    mutation UpdateExpense($id: ID!, $input: UpdateExpenseInput!) {
-        updateExpense(id: $id, input: $input) {
+    mutation UpdateExpense($input: ExpenseUpdateInput!) {
+        updateExpense(expense: $input) {
             id
             description
             amount

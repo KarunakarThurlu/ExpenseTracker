@@ -24,6 +24,32 @@ const theme = createTheme({
                 },
             },
         },
+        //I want to add Buttons color to yellow
+        MuiButton: {    
+            styleOverrides: {
+                root: {
+                    '&.MuiButton-outlined': {
+                        borderColor: '#fbc600', // Set the yellow border for outlined buttons
+                        color: '#fbc600', // Set the text color to yellow
+                    },
+                    '&.MuiButton-outlined:hover': {
+                        borderColor: '#fbc600', // Keep the border color on hover
+                        backgroundColor: 'rgba(251, 198, 0, 0.1)', // Optional: light yellow background on hover
+                    },
+                    '&.MuiButton-contained': {
+                        backgroundColor: '#fbc600', // Set the background color for contained buttons
+                        color: '#fff', // Set the text color to white
+                    },
+                    '&.MuiButton-text': {
+                        backgroundColor: '#fbc600', // Set the background color for contained buttons
+                        color: '#fff', // Set the text color to white
+                    },
+                    '&.MuiButton-contained:hover': {
+                        backgroundColor: '#e6b800', // Darker yellow on hover
+                    },
+                },
+            },
+        },
     },
 });
 

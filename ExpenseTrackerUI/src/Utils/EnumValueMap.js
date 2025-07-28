@@ -1,0 +1,40 @@
+export const enumValueMap = {
+  Category: {
+    FOOD: 'FOOD',
+    TRANSPORT: 'TRANSPORT',
+    SHOPPING: 'SHOPPING',
+    UTILITIES: 'UTILITIES',
+    ENTERTAINMENT: 'ENTERTAINMENT',
+    HEALTHCARE: 'HEALTHCARE',
+    GROCERIES: 'GROCERIES',
+    EDUCATION: 'EDUCATION',
+    OTHER: 'OTHER',
+    FUEL:"FUEL",
+    CREDITCARDBILL:"CREDITCARDBILL",
+
+  },
+  PaymentMethod: {
+    CASH: "CASH",
+    CREDIT_CARD: "CREDIT_CARD",
+    DEBIT_CARD: "DEBIT_CARD",
+    BANK_TRANSFER: "BANK_TRANSFER",
+    DIGITAL_WALLET: "DIGITAL_WALLET",
+    UPI: "UPI",
+    CHEQUE: "CHEQUE",
+    SALARY: "SALARY",
+    OTHER: "OTHER"
+  },
+  TransactionType: {
+    CREDIT: 'CREDIT',
+    DEBIT: 'DEBIT',
+  },
+  Gendar: {
+    MALE: 'MALE',
+    FEMALE: 'FEMALE',
+  },
+  Roles: {
+    USER: 'USER',
+    ADMIN: 'ADMIN',
+    SUPERADMIN: 'SUPERADMIN',
+  }
+};

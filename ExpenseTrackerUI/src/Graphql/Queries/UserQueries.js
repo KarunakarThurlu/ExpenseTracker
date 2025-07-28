@@ -1,20 +1,23 @@
 import { gql } from '@apollo/client';
 
 const FETCH_USERS = gql`
-  query FetchUsers {
-    fetchUsers {
-      id
-      firstName
-      lastName
-      email
-      phoneNumber
-      roles {
-        roleName
-      }
-      expenses {
-        description
-        amount
-        category
+  query Users($pageNumber: Int!, $pageSize: Int!, $sortBy: UserSortField, $sortDirection: SortDirection) {
+    users(pageNumber: $pageNumber, pageSize: $pageSize, sortBy: $sortBy, sortDirection: $sortDirection) {
+      total
+      data{
+        createdAt
+            createdBy
+            email
+            firstName
+            gendar
+            id
+            lastName
+            phoneNumber
+            tenantId
+            updatedAt
+            roles {
+              roleName
+            }
       }
     }
   }

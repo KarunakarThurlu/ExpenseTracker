@@ -16,17 +16,8 @@ spring:
     show-sql: true      # Enable this to log SQL queries in the console
     properties:
       hibernate:
-        format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-graphql:
-  playground:
-    enabled: true  # Enables GraphQL Playground
-    mapping: /playground
-  graphiql:
-    enabled: true  # Enables GraphiQL
-    mapping: /graphiql  # Path for GraphiQL UI
-    endpoint: /graphql  # GraphQL endpoint that GraphiQL will query	
 
 management:
   endpoints:

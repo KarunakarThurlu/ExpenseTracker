@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.expensetracker.dto.ExpenseDTO;
 import com.expensetracker.dto.UserDTO;
+import com.expensetracker.entity.Tenant;
 import com.expensetracker.entity.User;
 
 public class UserMapper {
@@ -22,6 +23,8 @@ public class UserMapper {
         dto.setGendar(user.getGendar());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setCreatedBy(user.getCreatedBy() != null ? user.getCreatedBy().getId() : null);
+        dto.setTenantId(user.getTenant() != null ? user.getTenant().getId() : null);
      // Explicitly specify the type for roles, assuming it's Set<String>
         dto.setRoles(user.getRoles());
         
@@ -45,7 +48,8 @@ public class UserMapper {
         user.setGendar(userDTO.getGendar());
         user.setPassword(userDTO.getPassword());
         user.setRoles(userDTO.getRoles());
-
+        user.setCreatedBy(userDTO.getCreatedBy() != null ? new User(userDTO.getCreatedBy()) : null);
+        user.setTenant(userDTO.getTenantId() != null ? new Tenant(userDTO.getTenantId()) : null);
         // Map expenses from ExpenseDTO back to Expense entity
 //        List<Expense> expenses = Optional.ofNullable(userDTO.getExpenses())
 //        	    .orElse(Collections.emptyList()) // If expenses is null, use an empty list

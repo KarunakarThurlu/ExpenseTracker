@@ -1,30 +1,48 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css'
-import Dashboard from './Pages/Dashboard';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import './App.css';
 import Signin from './Pages/Signin';
-import AppHeader from './Components/AppHeader';
 import Signup from './Pages/Signup';
-import Expenses from './Components/Expenses';
+import AppHeader from './Components/AppHeader';
+import Expenses from './Components/Expenses/Expenses';
+import PrivateRoute from './Utils/PrivateRoute';
+import { isLoggedIn } from './Utils/Auth';
+import Tenants from './Components/Tenants/Tenants';
+import Users from './Components/Users/Users';
+import Dashboard from './Components/DashBoard/Dashboard';
+
 
 function App() {
-
   return (
     <Router>
       <Routes>
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/*" element={
-          <>
-            <AppHeader />
-            <Routes>
-              <Route path='/dashboard' element={<Dashboard />} />
-              <Route path='/expenses' element={<Expenses />} />
-            </Routes>
-          </>
-        } />
+                {/* Root path redirect */}
+        <Route path="/" element={<Navigate to={isLoggedIn() ? "/dashboard" : "/signin"} replace />} />
+
+        {/* ✅ Redirect from /signin if already logged in */}
+        <Route path="/signin" element={isLoggedIn() ? <Navigate to="/dashboard" replace /> : <Signin />} />
+        <Route path="/signup" element={isLoggedIn() ? <Navigate to="/dashboard" replace /> : <Signup />} />
+
+        <Route
+          path="/*"
+          element={
+            <PrivateRoute>
+              <>
+                <AppHeader />
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/expenses" element={<Expenses />} />
+                  <Route path="/tenants" element={<Tenants />} />
+                  <Route path="/users" element={<Users />} />
+                  {/* <Route path="/profile" element={<Profile />} /> */}
+                  {/* Add more routes as needed */}
+                </Routes>
+              </>
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

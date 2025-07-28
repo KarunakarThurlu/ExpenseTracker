@@ -2,16 +2,16 @@ package com.expensetracker.dto;
 
 public class PaginatedResponse<T> {
 	T data;
-	Integer total;
+	Long total;
 	
-	public PaginatedResponse() {
-		super();
-	}
-
-	public PaginatedResponse(T data, Integer total) {
+	public PaginatedResponse(T data, Long total) {
 		super();
 		this.data = data;
 		this.total = total;
+	}
+
+	public PaginatedResponse() {
+		super();
 	}
 
 	public T getData() {
@@ -22,16 +22,18 @@ public class PaginatedResponse<T> {
 		this.data = data;
 	}
 
-	public Integer getTotal() {
+	public Long getTotal() {
 		return total;
 	}
 
-	public void setTotal(Integer total) {
+	public void setTotal(Long total) {
 		this.total = total;
 	}
 
 	@Override
 	public String toString() {
-		return "{ data : " + data + ", total : " + total + " }";
+		return "{ data : " + data + ", total : " + total + " } ";
 	}	
+	
+	
 }

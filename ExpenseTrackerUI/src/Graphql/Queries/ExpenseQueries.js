@@ -1,15 +1,21 @@
 import { gql } from '@apollo/client';
 
 const FETCH_EXPENSES = gql`
-  query FetchExpenses {
-    fetchExpenses {
-      id
-      description
-      amount
-      date
-      location
-      category
-      paymentMethod
+  query Expenses($pageNumber: Int!, $pageSize: Int!, $sortBy: UserSortField, $sortDirection: SortDirection) {
+    expenses(pageNumber: $pageNumber, pageSize: $pageSize, sortBy: $sortBy, sortDirection: $sortDirection) {
+      total
+      data {
+        amount
+        category
+        createdAt
+        date
+        description
+        id
+        location
+        paymentMethod
+        transactionType
+        updatedAt
+      }
     }
   }
 `;

@@ -1,56 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { useNotifier } from './Notifyer';
 
 const DataTable = ({
   columns,
-  fetchData, // Function to fetch data from the server
-  pageSizeOptions = [5, 10, 25, 50],
+  fetchData,
+  initialSort = { field: 'createdAt', sort: 'desc' },
+  pageSizeOptions = [5, 10, 20],
 }) => {
+  const { showNotification } = useNotifier();
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 5 });
+  const [sortModel, setSortModel] = useState([initialSort]);
   const [rows, setRows] = useState([]);
-  const [rowCount, setRowCount] = useState(0);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: pageSizeOptions[0],
-  });
-
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const { data, total } = await fetchData({
+        pageSize: paginationModel.pageSize,
+        pageNumber: paginationModel.page,
+        sortBy: sortModel[0]?.field,
+        sortDirection: sortModel[0]?.sort?.toUpperCase() || 'DESC',
+      });
+      setRows(data);
+      setTotal(total);
+    } catch (err) {
+      console.log('DataTable fetch error:', err);
+      showNotification(err.message, 'error')
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchTableData = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchData({
-          page: paginationModel.page,
-          pageSize: paginationModel.pageSize
-        });
-
-        setRows(data.rows);
-        setRowCount(data.total);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTableData();
-  }, [paginationModel]);
+    loadData();
+  }, [paginationModel, sortModel]);
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        rowCount={rowCount}
-        pageSizeOptions={pageSizeOptions}
-        paginationMode="server"
-        sortingMode="server"
-        paginationModel={paginationModel}
-        onPaginationModelChange={(newModel) => setPaginationModel(newModel)}
-        loading={loading}
-      />
-    </div>
+    <DataGrid
+      rows={rows}
+      columns={columns}
+      loading={loading}
+      pagination
+      paginationModel={paginationModel}
+      onPaginationModelChange={setPaginationModel}
+      paginationMode="server"
+      rowCount={total}
+      pageSizeOptions={pageSizeOptions}
+      sortingMode="server"
+      sortModel={sortModel}
+      onSortModelChange={setSortModel}
+      sx={{
+        height: 600, // ✅ fixes total height, including header + footer
+        '& .MuiDataGrid-columnHeader': {
+          backgroundColor: '#fbc600',
+        },
+        '& .MuiDataGrid-virtualScroller': {
+          overflowY: 'auto', // ✅ scroll inside for rows
+        },
+        '& .MuiDataGrid-footerContainer': {
+          backgroundColor: '#f5f5f5',
+        },
+      }}
+    />
+
   );
 };
 

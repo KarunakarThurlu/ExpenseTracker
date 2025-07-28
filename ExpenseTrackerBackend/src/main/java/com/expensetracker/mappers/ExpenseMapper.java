@@ -20,7 +20,7 @@ public class ExpenseMapper {
         dto.setLocation(expense.getLocation());
         dto.setCategory(expense.getCategory());
         dto.setPaymentMethod(expense.getPaymentMethod());
-        
+        dto.setTransactionType(expense.getTransactionType());
         // Map user information (if needed, could also map just the user ID)
         if (expense.getUser() != null) {
             dto.setUserId(expense.getUser().getId()); // Assuming ExpenseDTO has a userId field
@@ -35,6 +35,7 @@ public class ExpenseMapper {
         expense.setDate(expenseDTO.getDate());
         expense.setLocation(expenseDTO.getLocation());
         expense.setCategory(expenseDTO.getCategory());
+        expense.setTransactionType(expenseDTO.getTransactionType());
         expense.setPaymentMethod(expenseDTO.getPaymentMethod());
         expense.setUser(user);
         return expense;
