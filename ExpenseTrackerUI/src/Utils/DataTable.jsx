@@ -60,7 +60,8 @@ const DataTable = ({
           overflowY: 'auto', // ✅ scroll inside for rows
         },
         '& .MuiDataGrid-footerContainer': {
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#fbc600',
+          fontSize:'5px'
         },
       }}
     />

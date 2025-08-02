@@ -1,56 +1,56 @@
-// src/theme.js
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
-    components: {
-        MuiOutlinedInput: {
-            styleOverrides: {
-                root: {
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#fbc600', // Set the yellow outline on focus
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#fbc600', // Optional: yellow outline on hover
-                    }
-                },
-            },
+const getDesignTokens = (mode) => ({
+  palette: {
+    mode,
+    ...(mode === 'dark' && {
+      background: {
+        default: '#121212',
+      },
+    }),
+  },
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fbc600',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fbc600',
+          },
         },
-        MuiInputLabel: {
-            styleOverrides: {
-                root: {
-                    '&.Mui-focused': {
-                        color: '#3b3d49', // Optional: Set label color to yellow on focus
-                    },
-                },
+        input: {
+          ...(mode === 'dark' && {
+            '&::-webkit-calendar-picker-indicator': {
+              filter: 'invert(1)',
             },
+          }),
         },
-        //I want to add Buttons color to yellow
-        MuiButton: {    
-            styleOverrides: {
-                root: {
-                    '&.MuiButton-outlined': {
-                        borderColor: '#fbc600', // Set the yellow border for outlined buttons
-                        color: '#fbc600', // Set the text color to yellow
-                    },
-                    '&.MuiButton-outlined:hover': {
-                        borderColor: '#fbc600', // Keep the border color on hover
-                        backgroundColor: 'rgba(251, 198, 0, 0.1)', // Optional: light yellow background on hover
-                    },
-                    '&.MuiButton-contained': {
-                        backgroundColor: '#fbc600', // Set the background color for contained buttons
-                        color: '#fff', // Set the text color to white
-                    },
-                    '&.MuiButton-text': {
-                        backgroundColor: '#fbc600', // Set the background color for contained buttons
-                        color: '#fff', // Set the text color to white
-                    },
-                    '&.MuiButton-contained:hover': {
-                        backgroundColor: '#e6b800', // Darker yellow on hover
-                    },
-                },
-            },
-        },
+      },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          '&.MuiButton-outlined': {
+            borderColor: '#fbc600',
+            color: '#fbc600',
+          },
+          '&.MuiButton-outlined:hover': {
+            borderColor: '#fbc600',
+            backgroundColor: 'rgba(251, 198, 0, 0.1)',
+          },
+          '&.MuiButton-contained': {
+            backgroundColor: '#fbc600',
+            color: '#fff',
+          },
+          '&.MuiButton-contained:hover': {
+            backgroundColor: '#e6b800',
+          },
+        },
+      },
+    },
+  },
 });
 
-export default theme;
+export const getTheme = (mode) => createTheme(getDesignTokens(mode));

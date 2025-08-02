@@ -8,10 +8,13 @@ import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ import com.expensetracker.repository.TenantRepository;
 import com.expensetracker.repository.UserRepository;
 import com.expensetracker.service.UserService;
 import com.expensetracker.util.CommonConstants;
+import com.expensetracker.util.QueryConstants;
 import com.expensetracker.util.Utils;
 
 
@@ -49,11 +53,18 @@ public class UserServiceImpl implements UserService {
 	
 	private TenantRepository tenantRepository;
 	
-	public UserServiceImpl(UserRepository userRepository,RoleRepository roleRepository,PasswordEncoder passwordEncoder,TenantRepository tenantRepository) {
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	
+	public UserServiceImpl(UserRepository userRepository,
+			RoleRepository roleRepository,
+			PasswordEncoder passwordEncoder,
+			TenantRepository tenantRepository,
+			NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.tenantRepository = tenantRepository;
+		this.namedParameterJdbcTemplate=namedParameterJdbcTemplate;
 	}
 
 	@Override
@@ -198,7 +209,7 @@ public class UserServiceImpl implements UserService {
 								.map(UserMapper.toUserDTO)
 								.orElseThrow(() -> new CustomGraphQLException(400, CommonConstants.USER_NOT_FOUND));
 		} else if (Utils.isAdmin(currentUser.getRoles())) {
-			Long tenantId = currentUser.getId();
+			Long tenantId = currentUser.getTenant().getId();
 			if (tenantId == null || tenantId == 0) {
 				throw new CustomGraphQLException(403, "Admins can only access users from their own tenant");
 			}
@@ -246,24 +257,52 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String updatePassword(ChangePasswordDTO changePasswordDTO) {
-		User user = userRepository.findByEmail(changePasswordDTO.email());
-		if(user == null) {
-			throw new CustomGraphQLException(400, "User " + changePasswordDTO.email() + " Dosn't Exists");
+		final String FIND_BY_USER_ID = " SELECT u.id, u.email, u.password, u.first_name, u.last_name, u.phone_number FROM users as u WHERE u.id =:id ";
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", changePasswordDTO.id());
+		UserDTO user=null;
+		try {
+			user = namedParameterJdbcTemplate.queryForObject(FIND_BY_USER_ID, params, (rs, rowNum) -> {
+				UserDTO u = new UserDTO();
+				u.setId(rs.getLong("id"));
+				u.setFirstName(rs.getString("first_name"));
+				u.setLastName(rs.getString("last_name"));
+				//u.setPhoneNumber(rs.getString("phone_number"));
+				u.setPassword(rs.getString("password"));
+				u.setEmail(rs.getString("email"));
+				return u;
+			});
+		} catch (DataAccessException e) {
+			logger.error("Getting Exception While Getting user :: {}", e.getMessage());
 		}
-		//Check if the old password matches
-		if(!passwordEncoder.matches(changePasswordDTO.oldPassword(), user.getPassword())) {
+		if (user == null) {
+			throw new CustomGraphQLException(400, "User Dosn't Exists");
+		}
+		
+		// USER Can change his own password and SUPER_ADMIN can change any user's password
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		// Check if the old password matches
+		if (!Utils.isSuperAdmin(userDetails.getUser().getRoles()) && !passwordEncoder.matches(changePasswordDTO.oldPassword(), user.getPassword())) {
 			throw new CustomGraphQLException(400, "Old Password is Incorrect");
 		}
-		
-		//USER Can change his own password and SUPER_ADMIN can change any user's password
-		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (!userDetails.getUser().getId().equals(user.getId()) && !Utils.isSuperAdmin(userDetails.getUser().getRoles())) {
+
+
+		if (!userDetails.getUser().getId().equals(user.getId())
+				&& !Utils.isSuperAdmin(userDetails.getUser().getRoles())) {
 			throw new CustomGraphQLException(403, "You do not have permission to change this user's password");
 		}
-		
-		user.setPassword(passwordEncoder.encode(changePasswordDTO.password()));
-		userRepository.save(user);
-		return "Password Changed Successfully";
+		MapSqlParameterSource updatePasswordMap = new MapSqlParameterSource();
+		String updatedPassword = passwordEncoder.encode(changePasswordDTO.password());
+		updatePasswordMap.addValue("password", updatedPassword);
+		updatePasswordMap.addValue("id", user.getId());
+
+		int updateRowCount = namedParameterJdbcTemplate.update(QueryConstants.UPDATE_PASSWORD, updatePasswordMap);
+		if(updateRowCount==1)
+			return "Password Changed Successfully";
+		else
+			return "Password not updated";
 	}
 
 	@Override

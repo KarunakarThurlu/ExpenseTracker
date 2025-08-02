@@ -186,7 +186,8 @@ input TenantUpdateInput {
 }
 
 input UpdatePasswordInput {
-	email:String!
+	id:String!
+	oldPassword:String!
 	password:String!
 }
 

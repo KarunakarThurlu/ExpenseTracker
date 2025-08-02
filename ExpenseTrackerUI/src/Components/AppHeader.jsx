@@ -1,23 +1,30 @@
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Drawer, Menu, MenuItem } from '@mui/material';
+import { Drawer, Menu, MenuItem} from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
 import SideMenu from './SideMenu';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ChangePassword from './PopUpModels/ChangePassword';
+import { useThemeMode } from '../Utils/ThemeModeProvider';
+
 
 export default function AppHeader() {
 
+const { mode, toggleTheme } = useThemeMode();
     const navigate = useNavigate();
 
-    const [state, setState] = useState({ drawerOpen: false });
-    const [auth, setAuth] = useState(true);
+    const [state, setState] = useState({
+        drawerOpen: false,
+        showChangePassword: false
+    });
+
     const [anchorEl, setAnchorEl] = useState(null);
 
 
@@ -32,19 +39,27 @@ export default function AppHeader() {
         setState(prevState => ({ ...prevState, drawerOpen: open }))
     };
     const handleLogout = () => {
+        setAnchorEl(null);
         localStorage.removeItem('token');
-       //setAuth(false);
-       navigate('/signin');
+        navigate('/signin');
     };
 
-    // useEffect(() => {
-    //     if (auth) {
-    //         navigate('/signin');
-    //     }
-    // }, [auth]);
+    const handleChangePassword = () => {
+        setAnchorEl(null);
+        setState(prevState => ({ ...prevState, showChangePassword: true }))
+    }
+    const hideChangePassword = () => {
+        setState(prevState => ({ ...prevState, showChangePassword: false }))
+    }
+    const toggleDarkMode = () => {
+        toggleTheme()
+        setAnchorEl(null);
+    };
+
 
     return (
         <>
+            {state.showChangePassword && <ChangePassword open={state.showChangePassword} onClose={hideChangePassword}  />}
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="sticky" sx={{ backgroundColor: '#fbc600', color: 'black' }}>
                     <Toolbar>
@@ -87,8 +102,13 @@ export default function AppHeader() {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                                <MenuItem onClick={toggleDarkMode}>
+                                    <IconButton color="inherit">
+                                        {mode==='dark' ? <LightModeIcon /> : <DarkModeIcon />}
+                                    </IconButton>
+                                    {mode==='light' ? "Light Mode" : "Dark Mode"}
+                                </MenuItem>
+                                <MenuItem onClick={handleChangePassword}>Change Password</MenuItem>
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </div>
@@ -99,6 +119,5 @@ export default function AppHeader() {
                 <SideMenu onClose={toggleDrawer(false)} sx={{ backgroundColor: '#fbc600', color: 'black' }} />
             </Drawer>
         </>
-
     );
 }

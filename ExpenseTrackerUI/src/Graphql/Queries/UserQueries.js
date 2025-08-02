@@ -24,20 +24,16 @@ const FETCH_USERS = gql`
 `;
 
 const FETCH_USER_BY_ID = gql`
-  query FetchUser($id: ID!) {
-    fetchUser(id: $id) {
+  query User($id: ID!) {
+    user(id: $id) {
       id
       firstName
       lastName
       email
+      gendar
       phoneNumber
       roles {
         roleName
-      }
-      expenses {
-        description
-        amount
-        category
       }
     }
   }

@@ -33,4 +33,7 @@ public class QueryConstants {
 			LIMIT 
 					5
 			""";
+	
+	public static final String FIND_BY_USER_ID = "SELECT id, email, password FROM users WHERE id=:userID";
+	public static final String UPDATE_PASSWORD = "UPDATE users set password=:password WHERE id=:id";
 }

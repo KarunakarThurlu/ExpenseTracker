@@ -1,21 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider, CssBaseline, IconButton } from '@mui/material';
 import './index.css'
-import theme from './theme.js'
 import App from './App.jsx'
 import { ApolloClientProvider } from './Graphql/ApolloClientProvider.jsx'
-import {Notifyer} from './Utils/Notifyer';
+import { Notifyer } from './Utils/Notifyer';
+import { ThemeModeProvider } from './Utils/ThemeModeProvider.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ApolloClientProvider>
-      <ThemeProvider theme={theme}>
+      <ThemeModeProvider>
+        <CssBaseline/>
         <Notifyer>
           <App />
         </Notifyer>
-      </ThemeProvider>
+      </ThemeModeProvider>
     </ApolloClientProvider>
   </StrictMode>,
 )

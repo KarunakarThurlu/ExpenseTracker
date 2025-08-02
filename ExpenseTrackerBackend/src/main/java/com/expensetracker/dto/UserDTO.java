@@ -27,7 +27,7 @@ public class UserDTO {
 
     private String password;
 
-    @Pattern(regexp = "^\\+?[0-9. ()-]{10}$", message = "Phone number should be valid and between 10 to 15 digits")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number should be valid and between 10 to 15 digits")
     private String phoneNumber;
     
     private LocalDateTime createdAt;

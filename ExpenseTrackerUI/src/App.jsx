@@ -9,9 +9,11 @@ import { isLoggedIn } from './Utils/Auth';
 import Tenants from './Components/Tenants/Tenants';
 import Users from './Components/Users/Users';
 import Dashboard from './Components/DashBoard/Dashboard';
+import Profile from './Pages/Profile';
 
 
 function App() {
+
   return (
     <Router>
       <Routes>
@@ -33,7 +35,7 @@ function App() {
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/tenants" element={<Tenants />} />
                   <Route path="/users" element={<Users />} />
-                  {/* <Route path="/profile" element={<Profile />} /> */}
+                  <Route path="/profile" element={<Profile />} />
                   {/* Add more routes as needed */}
                 </Routes>
               </>

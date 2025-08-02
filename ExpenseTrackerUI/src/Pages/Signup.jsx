@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import MuiLink from '@mui/material/Link';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -116,7 +116,7 @@ const Signup = () => {
                 padding: theme.spacing(2.5),
                 boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
                 borderRadius: '10px',
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
                 marginTop: '50px',
                 textAlign: 'center'
             }}
@@ -160,18 +160,16 @@ const Signup = () => {
                     variant="contained"
                     color="#fbc600"
                     onClick={handleSubmit}
-                    sx={{ marginTop: theme.spacing(0.5), backgroundColor: "#fbc600" }}
+                    sx={{ marginTop: theme.spacing(0.5), backgroundColor: theme.palette.background.paper }}
                 >
                     Signup
                 </Button>
-                <div>
-                    <Link to="/signup" style={{ textDecoration: 'none', marginRight: '10px', color: "#3b3d49" }}>
-                        Create an account
-                    </Link>
-                    <Link to="/signin" style={{ textDecoration: 'none', color: "#3b3d49" }}>
-                        Signin
-                    </Link>
-                </div>
+                <MuiLink component={Link} to="/signup" sx={{ color: 'text.primary', textDecoration: 'none', mr: 1 }}>
+                    Create an account
+                </MuiLink>
+                <MuiLink component={Link} to="/signin" sx={{ color: 'text.primary', textDecoration: 'none' }}>
+                    Signin
+                </MuiLink>
             </Stack>
         </Box>
     )

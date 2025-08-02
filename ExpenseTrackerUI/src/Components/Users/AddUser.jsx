@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 
 
 const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
-    console.log("USER INITIAL DATA ",initialData)
+    console.log("USER INITIAL DATA ", initialData)
     const [form, setForm] = useState({
         id: '',
         firstName: '',
@@ -17,8 +17,8 @@ const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
         phoneNumber: '',
         gendar: '',
         password: '',
-        tenantId:0,
-        createdBy:0,
+        tenantId: 0,
+        createdBy: 0,
         roles: ['USER'],
     });
 
@@ -36,8 +36,8 @@ const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
             email: initialData.email || '',
             phoneNumber: initialData.phoneNumber || '',
             gendar: initialData.gendar || '',
-            tenantId:initialData.tenantId || '',
-            createdBy:initialData.createdBy || '',
+            tenantId: initialData.tenantId || '',
+            createdBy: initialData.createdBy || '',
             roles: initialData?.roles?.map(r => r.roleName) || [],
         });
         setErrors({})
@@ -58,14 +58,14 @@ const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if(validateForm()){
+
+        if (validateForm()) {
             const payload = {
-            ...form,
-            roles: form.roles?.map(role => ({ roleName: role }))
-        };
-        console.info(payload);
-        onSave(payload);  // pass new object
+                ...form,
+                roles: form.roles?.map(role => ({ roleName: role }))
+            };
+            console.info(payload);
+            onSave(payload);  // pass new object
         }
 
     };
@@ -82,10 +82,10 @@ const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
             if (!form.password) newErrors.password = 'Please Enter User Temp Password'
         }
         setErrors(newErrors);
-        const len=Object.keys(newErrors).length
-        return  len=== 0;
+        const len = Object.keys(newErrors).length
+        return len === 0;
     }
-    const handleClose = () =>{
+    const handleClose = () => {
         setErrors({});
         onClose();
     }
@@ -173,8 +173,8 @@ const AddUser = ({ open, onClose, onSave, initialData = {} }) => {
                         value={form.password}
                         onChange={handleChange}
                         fullWidth
-                         error={!!errors.password}
-                            helperText={errors.password}
+                        error={!!errors.password}
+                        helperText={errors.password}
                     />)}
 
                     {/* Row 4: Roles */}

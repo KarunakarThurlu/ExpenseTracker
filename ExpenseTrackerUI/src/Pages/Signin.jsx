@@ -6,13 +6,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { Button, Stack, TextField } from '@mui/material';
 import axios from 'axios';
-import {useNotifier} from '../Utils/Notifyer'
+import MuiLink from '@mui/material/Link';
+import { useNotifier } from '../Utils/Notifyer'
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Signin = () => {
     const theme = useTheme();
-    const { showNotification } =   useNotifier();
+    const { showNotification } = useNotifier();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -37,30 +38,30 @@ const Signin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-         
+
         //Signin API Call and forward /dashboard if success
         if (validateForm()) {
             axios.post(`${apiUrl}/signin`, formData)
                 .then(response => {
                     if (response.status === 202 && response.data.AuthToken) {
                         const token = response.data.AuthToken;
-                         const payload = JSON.parse(atob(token.split('.')[1]));
+                        const payload = JSON.parse(atob(token.split('.')[1]));
                         localStorage.setItem('token', token);
                         localStorage.setItem('userId', payload.userId);
-                        const roles = payload.roles.map(role=>role.authority).join(',');
+                        const roles = payload.roles.map(role => role.authority).join(',');
                         localStorage.setItem('roles', roles);
-                        setFormData({
-                            email: '',
-                            password: ''
-                        });
                         navigate('/dashboard');
                     } else {
-                        setError({ ...error, general: response.data.message });
+                        if (response.data) {
+                            setError({ ...error, general: response.data.message });
+                        } else {
+                            setError({ ...error, general: 'Internal Server Error' });
+                        }
                     }
-                    showNotification('Login is success','success')
+                    showNotification('Login is success', 'success')
                 }).catch(error => {
-                      const message =  error?.response.data.message || "Internal Server Error"
-                    showNotification(message,'error')
+                    const message = error?.response?.data?.message || "Internal Server Error"
+                    showNotification(message, 'error')
                     setError({ ...error, general: 'An error occurred. Please try again.' });
                 });
         }
@@ -110,9 +111,9 @@ const Signin = () => {
                 padding: theme.spacing(2.5),
                 boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
                 borderRadius: '10px',
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
                 marginTop: '50px',
-                textAlign:'center'
+                textAlign: 'center'
             }}
         >
             <LockPersonRoundedIcon />
@@ -148,15 +149,12 @@ const Signin = () => {
                     SingnIn
                 </Button>
 
-                <div>
-                    <Link to="/signup" style={{ textDecoration: 'none', marginRight: '10px',color: "#3b3d49" }}>
-                        Create an account
-                    </Link>
-
-                    <Link to="/signin" style={{ textDecoration: 'none',color: "#3b3d49" }}>
-                        Signin
-                    </Link>
-                </div>
+                <MuiLink component={Link} to="/signup" sx={{ color: 'text.primary', textDecoration: 'none', mr: 1 }}>
+                    Create an account
+                </MuiLink>
+                <MuiLink component={Link} to="/signin" sx={{ color: 'text.primary', textDecoration: 'none' }}>
+                    Signin
+                </MuiLink>
 
 
             </Stack >

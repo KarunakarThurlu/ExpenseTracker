@@ -43,7 +43,7 @@ public class User extends BaseEntity {
     @Size(min = 5, message = "Password must be at least 8 characters long")
     private String password;
 
-    @Pattern(regexp = "^\\+?[0-9. ()-]{10}$", message = "Phone number should be valid and between 10 to 15 digits")
+    @Pattern(regexp = "^\\+?[0-9]{10}$", message = "Phone number should be valid and between 10 to 15 digits")
     private String phoneNumber;
 	
 	@Enumerated(EnumType.STRING)

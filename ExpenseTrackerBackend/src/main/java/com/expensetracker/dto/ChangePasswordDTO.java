@@ -11,9 +11,8 @@ import jakarta.validation.constraints.Size;
  * It includes validation constraints to ensure that the email is in a valid format and that the password meets minimum length requirements.
  */
 public record ChangePasswordDTO(
-		@NotBlank(message = "Email must not be blank") 
-		@Email(message = "Invalid email format") 
-		String email,
+		@NotBlank(message = "User Id not be blank") 
+		Long id,
 
 		@NotBlank(message = "Password must not be blank") 
 		@Size(min = 5, message = "Password must be at least 5 characters long") 

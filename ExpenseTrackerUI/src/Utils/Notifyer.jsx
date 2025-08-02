@@ -29,7 +29,7 @@ export const Notifyer = ({children }) => {
             <Snackbar
                 open={open}
                 autoHideDuration={9000}
-                onClose={handleClose}
+                // onClose={handleClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
                 <Alert
