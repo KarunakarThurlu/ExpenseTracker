@@ -1,6 +1,8 @@
 # 💰 Expense Tracker App  
 
-![Dashboard Preview](assets/dashboard.png) <!-- Replace with your actual image path -->
+![Dashboard Preview](https://github.com/user-attachments/assets/4ce8e161-a329-4403-94a5-e000115f8f94) 
+
+---
 
 > A full-stack **Expense Tracker** to log, visualize, and manage your expenses — built with **ReactJS**, **Spring Boot**, **PostgreSQL**, and **Highcharts**.  
 > 📊 Beautiful charts. 📅 Smart filters. 🌗 Dark & Light themes.
