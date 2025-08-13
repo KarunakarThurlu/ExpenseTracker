@@ -9,6 +9,13 @@ import { useLazyQuery } from '@apollo/client';
 import { DASHBOARD_QUERY } from '../../Graphql/Mutations/CommonMutation';
 import dayjs from 'dayjs';
 
+const shadowStyle = (theme) => ({
+  p: 2,
+  borderRadius: 2,
+  backgroundColor: theme.palette.background.paper, // auto light/dark
+  boxShadow: theme.shadows[3],
+})
+
 // Chart Config
 const getStyledAreaSplineChart = (title, dataSet = [], color = '#fbc600', isCount = false, themeMode = 'light') => ({
   chart: {
@@ -23,9 +30,25 @@ const getStyledAreaSplineChart = (title, dataSet = [], color = '#fbc600', isCoun
   xAxis: {
     categories: dataSet.map(d => d.key),
     tickmarkPlacement: 'on',
-    title: { enabled: false },
-    labels: { style: { color: themeMode === 'dark' ? '#ccc' : '#666' } }
+    title: {
+      enabled: true,
+      text: '',
+      style: { color: themeMode === 'dark' ? '#fff' : '#faf6f6ff' }
+    },
+    labels: {
+      style: { color: themeMode === 'dark' ? '#fff' : '#fbf8f8ff' }
+    }
   },
+  legend: {
+    itemStyle: {
+      color: themeMode === 'dark' ? '#fff' : '#333',
+      fontWeight: '500'
+    },
+    itemHoverStyle: {
+      color: themeMode === 'dark' ? '#fbc600' : '#000' // hover effect
+    }
+  },
+
   yAxis: {
     title: {
       text: isCount ? 'Count' : 'Amount (₹)',
@@ -111,14 +134,14 @@ const Dashboard = () => {
   const net = credit - debit;
 
   const shadowStyle = {
-    borderRadius: 3,
-    boxShadow: theme.shadows[3],
-    backgroundColor: theme.palette.background.paper,
     p: 2,
-    transition: 'transform 0.2s ease',
+    borderRadius: 2,
+    backgroundColor: theme.palette.background.paper, // paper is usually lighter than default in dark mode
+    boxShadow: mode === 'dark' ? '0 10px 30px rgba(137, 135, 135, 0.6)' : '0 10px 30px rgba(0,0,0,0.12)',
+    transition: 'transform 0.18s ease',
     '&:hover': {
-      transform: 'scale(1.01)',
-      boxShadow: theme.shadows[6]
+      transform: 'translateY(-4px)',
+      boxShadow: mode === 'dark' ? '0 14px 40px rgba(242, 240, 240, 0.7)' : '0 16px 48px rgba(0,0,0,0.16)'
     }
   };
 
@@ -161,7 +184,13 @@ const Dashboard = () => {
         <Box sx={shadowStyle}>
           <HighchartsReact
             highcharts={Highcharts}
-            options={getStyledAreaSplineChart('Amount by Category', dashboardData.groupingByCategory, '#fbc600', false, mode)}
+            options={getStyledAreaSplineChart(
+              'Amount by Category',
+              dashboardData.groupingByCategory,
+              '#fbc600',
+              false,
+              mode
+            )}
           />
         </Box>
         <Box sx={shadowStyle}>
