@@ -48,7 +48,7 @@ expense-tracker/
 │   ├── src/main/resources/
 │   │   ├── application.properties      
 │   │   └── schema.graphqls             
-│   └── pom.xml                         
+│   └── build.gradle                         
 │
 ├── frontend/                           
 │   ├── public/                         
